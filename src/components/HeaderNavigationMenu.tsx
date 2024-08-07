@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { User } from "@supabase/supabase-js"
 import Link from "next/link"
+import LogoutButton from "./LogoutButton"
 
 const getUser = (user: User) => {
   if (user.user_metadata.first_name) {
@@ -33,11 +34,14 @@ export default function HeaderNavigationMenu({ user }: {
             {getUser(user)}
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <Link href="/logout" legacyBehavior passHref>
+            <NavigationMenuItem asChild>
+              <LogoutButton />
+            </NavigationMenuItem>
+            {/* <Link href="/logout" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Cerrar sesión
               </NavigationMenuLink>
-            </Link>
+            </Link> */}
           </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>

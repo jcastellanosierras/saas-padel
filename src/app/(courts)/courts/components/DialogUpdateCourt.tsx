@@ -15,11 +15,14 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
-export default function DialogCreateCourt() {
-  const [open, setOpen] = useState<boolean>(false)
-  const [creating, setCreating] = useState<boolean>(false)
+export default function DialogCourt({ open, setOpen, courtId }: {
+  open: boolean
+  setOpen: Dispatch<SetStateAction<boolean>>
+  courtId: number
+}) {
+  const [loading, setLoading] = useState<boolean>(false)
 
   const router = useRouter()
   const { toast } = useToast()
@@ -28,19 +31,21 @@ export default function DialogCreateCourt() {
 
   const supabase = createClient()
 
-  const handleCreateCourt = async () => {
+  const handleUpdateCourt = async () => {
     const courtName = courtNameRef.current?.value
 
     if (!courtName) {
-      alert('La pista tiene que tener un nombre')
+      setOpen(false)
       return
     }
 
-    setCreating(true)
+    setLoading(true)
 
-    const res = await supabase.from('courts').insert({ name: courtName })
+    const res = await supabase.from('courts').update({ name: courtName }).eq('id', courtId)
 
-    if (res.status !== 201) {
+    console.log(res)
+
+    if (res.status !== 204) {
       toast({
         title: 'Error',
         description: 'No se ha podido crear la pista correctamente',
@@ -48,7 +53,7 @@ export default function DialogCreateCourt() {
       })
     } else {
       toast({
-        title: 'Pista creada',
+        title: 'Pista actualizada',
         description: 'La pista se ha creado correctamente',
         variant: 'default',
       })
@@ -57,14 +62,24 @@ export default function DialogCreateCourt() {
       router.refresh()
     }
 
-    setCreating(false)
+    setLoading(false)
   }
+
+  useEffect(() => {
+    setOpen(open ?? false)
+  }, [open])
 
   return (
     <Dialog open={open}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>Añadir pista</Button>
-      </DialogTrigger>
+      {!courtId && (
+        <DialogTrigger asChild>
+          <Button
+            onClick={() => setOpen(true)}
+          >
+            Añadir pista
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -76,10 +91,10 @@ export default function DialogCreateCourt() {
         </DialogHeader>
         <DialogFooter>
           <Button
-            className={creating ? 'opacity-50 cursor-not-allowed' : ''}
-            onClick={handleCreateCourt}
+            className={loading ? 'opacity-50 cursor-not-allowed' : ''}
+            onClick={handleUpdateCourt}
           >
-            Crear pista
+            Actualizar
           </Button>
           <DialogClose asChild>
             <Button onClick={() => setOpen(false)} variant={'destructive'}>

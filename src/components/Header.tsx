@@ -2,8 +2,6 @@ import { createClient } from "@/utils/supabase/server"
 import Link from "next/link"
 import HeaderNavigationMenu from "./HeaderNavigationMenu"
 
-export const dynamic = 'force-dynamic'
-
 export default async function Header() {
   const supabase = createClient()
 
