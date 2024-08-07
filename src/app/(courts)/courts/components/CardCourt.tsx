@@ -10,13 +10,8 @@ import { createClient } from '@/utils/supabase/server'
 import Image from 'next/image'
 import { isAdmin } from '@/utils/supabase/server'
 import DropdownMenuCourtOptions from './DropdownMenuCourtOptions'
-
-const getFormattedTime = (date: Date) => {
-  const hours = date.getHours()
-  const minutes = date.getMinutes()
-
-  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
-}
+import ButtonReserve from './ButtonReserve'
+import { getFormattedTime } from '@/utils/formatDate'
 
 export default async function CardCourt({
   court,
@@ -55,12 +50,14 @@ export default async function CardCourt({
       </CardHeader>
       <CardContent>
         Estos son los turnos disponibles:
-        <div>
+        <div className='flex gap-2'>
           {data?.map((turn) => (
-            <Button key={turn.id} variant={'outline'}>
-              {getFormattedTime(new Date(turn.start_time))} -{' '}
-              {getFormattedTime(new Date(turn.end_time))}
-            </Button>
+            <ButtonReserve
+              key={`button-${turn.id}`}
+              turnId={turn.id}
+              startTime={getFormattedTime(new Date(turn.start_time))}
+              endTime={getFormattedTime(new Date(turn.end_time))}
+            />
           ))}
         </div>
       </CardContent>

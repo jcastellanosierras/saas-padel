@@ -43,8 +43,6 @@ export default function DialogCourt({ open, setOpen, courtId }: {
 
     const res = await supabase.from('courts').update({ name: courtName }).eq('id', courtId)
 
-    console.log(res)
-
     if (res.status !== 204) {
       toast({
         title: 'Error',

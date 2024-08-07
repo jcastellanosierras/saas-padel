@@ -7,12 +7,18 @@ export function createClient() {
   )
 }
 
-export const isAdmin = async () => {
+export const getUser = async () => {
   const supabase = createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
+
+  const profile = await supabase.from('profiles').select('*').eq('id', user?.id).single()
+
+  return profile.data
+}
+
+export const isAdmin = async () => {
+  const profile = await getUser()
   
-  const profile = await supabase.from('profiles').select('role').eq('id', user?.id).single()
-  
-  return profile.data?.role === 'ADMIN'
+  return profile.role === 'ADMIN'
 }

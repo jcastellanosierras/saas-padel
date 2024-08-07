@@ -35,7 +35,10 @@ export default function DropdownMenuCourtOptions({
           <DropdownMenuItem onClick={() => setDialogOpen(true)}>
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setAlertDialogOpen(true)}>
+          <DropdownMenuItem
+            className='text-red-500'
+            onClick={() => setAlertDialogOpen(true)}
+          >
             Eliminar
           </DropdownMenuItem>
         </DropdownMenuContent>
